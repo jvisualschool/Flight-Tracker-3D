@@ -5,8 +5,6 @@
 ## 🔗 Live Demo
 **[https://jvibeschool.org/FLIGHT_TRACKER_3D/](https://jvibeschool.org/FLIGHT_TRACKER_3D/)**
 
-![Flight Tracker 3D Preview](screenshot/screenshot_main.png)
-
 ## 🌐 서비스 개요 (Service Principle)
 
 FLIGHT TRACKER 3D는 **OpenSky Network**에서 제공하는 실시간 항공기 상태(State Vectors) 데이터를 활용합니다. 전 세계의 지상 수신기(ADS-B)로부터 수집된 데이터를 API를 통해 가져와, 3D 공간 좌표로 변환하여 사용자가 직관적으로 비행 흐름을 파악할 수 있도록 서비스합니다.
