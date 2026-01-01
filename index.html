@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLIGHT TRACKER 3D</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="globe-container"></div>
+
+    <!-- 사이버펑크 스타일 컨트롤 패널 -->
+    <div class="control-panel">
+        <div class="panel-header">
+            <h1><span id="splash-trigger" style="cursor: pointer;">✈️</span> FLIGHT TRACKER 3D</h1>
+            <div class="auth-status" id="auth-status">
+                <span class="status-indicator" id="status-indicator"></span>
+                <span id="auth-text">인증 중...</span>
+            </div>
+        </div>
+
+        <!-- 검색창 -->
+        <div class="filter-section">
+            <h2>🔍 검색</h2>
+            <div class="filter-item">
+                <input type="text" id="search-input" placeholder="콜사인, 항공사, 국가로 검색..." class="search-input">
+            </div>
+        </div>
+
+        <!-- 실시간 통계 -->
+        <div class="stats-section">
+            <h2>📊 실시간 통계</h2>
+            <div class="stat-item">
+                <span class="stat-label">비행기 수:</span>
+                <span class="stat-value" id="aircraft-count">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">마지막 업데이트:</span>
+                <span class="stat-value" id="last-update">-</span>
+            </div>
+        </div>
+
+        <!-- 지역 필터링 -->
+        <div class="filter-section">
+            <h2>🌍 지역 필터</h2>
+            <div class="region-buttons">
+                <button class="region-btn" data-region="world" data-credits="4">
+                    🌍 전 세계 (4 credits)
+                </button>
+                <button class="region-btn active" data-region="korea" data-credits="1">
+                    🇰🇷 한국 (1 credit)
+                </button>
+                <button class="region-btn" data-region="east-asia" data-credits="2">
+                    🌏 동아시아 (2 credits)
+                </button>
+                <button class="region-btn" data-region="europe" data-credits="3">
+                    🇪🇺 유럽 (3 credits)
+                </button>
+                <button class="region-btn" data-region="north-america" data-credits="3">
+                    🇺🇸 북미 (3 credits)
+                </button>
+            </div>
+        </div>
+
+        <!-- 필터 기능 -->
+        <div class="filter-section">
+            <h2>⚙️ 필터</h2>
+            <div class="filter-item">
+                <label for="min-altitude">최소 고도:</label>
+                <select id="min-altitude" class="altitude-select">
+                    <option value="0">전체 (0m 이상)</option>
+                    <option value="1000">저고도 (1,000m 이상)</option>
+                    <option value="3000">중고도 (3,000m 이상)</option>
+                    <option value="5000">고고도 (5,000m 이상)</option>
+                    <option value="8000">초고고도 (8,000m 이상)</option>
+                    <option value="10000">매우 높음 (10,000m 이상)</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="high-res-toggle" checked>
+                    <span>고해상도 지구본 이미지 (5400x2700)</span>
+                </label>
+            </div>
+            <div class="filter-item">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="city-labels-toggle" checked>
+                    <span>주요 도시 이름 표시</span>
+                </label>
+            </div>
+            <div class="button-group">
+                <button class="action-btn" id="refresh-btn">🔄 새로고침</button>
+                <button class="action-btn" id="auto-update-toggle">⏸️ 자동 업데이트</button>
+                <button class="action-btn" id="rotate-toggle">🔄 회전 정지</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 항공기 상세 정보 팝업 -->
+    <div class="popup" id="aircraft-popup">
+        <div class="popup-content">
+            <span class="close-btn" id="close-popup">&times;</span>
+            <h3>✈️ 항공기 정보</h3>
+            <div class="popup-info">
+                <div class="info-item">
+                    <span class="info-label">콜사인:</span>
+                    <span class="info-value" id="popup-callsign">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">항공사:</span>
+                    <span class="info-value" id="popup-airline">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">국가:</span>
+                    <span class="info-value" id="popup-country">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">고도:</span>
+                    <span class="info-value" id="popup-altitude">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">속도:</span>
+                    <span class="info-value" id="popup-velocity">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">방향:</span>
+                    <span class="info-value" id="popup-heading">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 로딩 오버레이 -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p>데이터 로딩 중...</p>
+    </div>
+
+    <!-- 항공기 툴팁 (롤오버 시 표시) -->
+    <div class="tooltip" id="aircraft-tooltip">
+        <div class="tooltip-content"></div>
+    </div>
+
+    <!-- 스플래시 모달 (앱 정보) -->
+    <div class="modal-overlay" id="splash-modal">
+        <div class="modal-content splash-content">
+            <span class="close-btn" id="close-splash">&times;</span>
+            <div class="splash-image-container">
+                <img src="images/splash.jpg" alt="Flight Tracker 3D Splash" id="splash-img">
+            </div>
+            <div class="splash-info">
+                <h2>✈️ FLIGHT TRACKER 3D</h2>
+                <p class="splash-tagline">Real-time 3D Aircraft Tracking Visualization</p>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="card-title-group">
+                            <i class="fas fa-layer-group"></i>
+                            <h4>기술 스택</h4>
+                        </div>
+                        <p>Three.js, globe.gl, Node.js, Express</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-title-group">
+                            <i class="fas fa-code"></i>
+                            <h4>데이터 소스</h4>
+                        </div>
+                        <p>OpenSky Network API</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-title-group">
+                            <i class="fas fa-user-ninja"></i>
+                            <h4>개발자</h4>
+                        </div>
+                        <p><a href="https://jvibeschool.com/" target="_blank" class="dev-link">Jinho Jung</a></p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-title-group">
+                            <i class="fas fa-calendar-alt"></i>
+                            <h4>배포 년도</h4>
+                        </div>
+                        <p>2026</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/globe.gl@2.32.0/dist/globe.gl.min.js"></script>
+    <script>
+        // 스크립트 로딩 확인
+        window.addEventListener('load', () => {
+            console.log('페이지 로드 완료');
+            console.log('THREE:', typeof window.THREE);
+            console.log('Globe:', typeof window.Globe);
+        });
+    </script>
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>

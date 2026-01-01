@@ -1,0 +1,26 @@
+{
+  "name": "flight-tracker-3d",
+  "version": "1.0.0",
+  "description": "Real-time 3D Flight Tracker using OpenSky Network API",
+  "main": "index.html",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "serve": "npx serve ."
+  },
+  "keywords": [
+    "flight-tracker",
+    "3d",
+    "opensky",
+    "globe",
+    "visualization"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "globe.gl": "^2.32.0",
+    "three": "^0.160.0",
+    "xml2js": "^0.6.2"
+  }
+}
