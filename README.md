@@ -39,7 +39,7 @@ FLIGHT TRACKER 3D는 **OpenSky Network**에서 제공하는 실시간 항공기 
 
 - **이름**: 정진호 (Jinho Jung)
 - **웹사이트**: [jvibeschool.com](https://jvibeschool.com/)
-- **개발 연도**: 2026
+- **개발 연도**: 2026.1 | ver 1.0
 
 ## 🚀 설치 및 실행 방법
 
